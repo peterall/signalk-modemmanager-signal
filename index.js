@@ -11,6 +11,7 @@ module.exports = function (app) {
     plugin.description = 'Provides LTE Signal from ModemManager';
 
     plugin.start = async function (options, restartPlugin) {
+        app.setPluginStatus('Starting');
         const path = 'electrical.modem.signalQuality';
         // notify server, once, of units metadata
         app.handleMessage(plugin.id, {
@@ -25,6 +26,7 @@ module.exports = function (app) {
         });
 
         const modem_manager = await chadburn.ModemManager.init(bus);
+        app.setPluginStatus('Modem manager initialized');
         const [[dbus_path, modem]] = modem_manager.modems;
         if (!dbus_path) {
             app.setPluginStatus('No modem connected');
@@ -52,7 +54,7 @@ module.exports = function (app) {
                     updates: [{
                         values: [{
                             path: path,
-                            value: null,
+                            value: 0,
                         }]
                     }]
                 });                
